@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  bot:
+    build: ./tgbot
+    container_name: tgbot
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+      - bot_logs:/app/logs
+    depends_on:
+      - db
+    networks:
+      - default
+
+  web:
+    build: ./admin_panel
+    container_name: django_admin
+    command: "python admin_panel/manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - bot
+    networks:
+      - default
+
+  db:
+    image: postgres:16
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./data/pg:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  bot_logs:
