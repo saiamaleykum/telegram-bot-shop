@@ -4,7 +4,7 @@ from aiogram.filters import CommandStart, StateFilter, Command
 from states import user
 from filters import ChatTypeFilter, TextFilter
 from . import start, menu, help, cart, fill_db
-from keyboards.inline.basic import Pagination, Quantity, Cart
+from keyboards.inline.basic import Pagination, Quantity, Cart, Payment
 
 
 def prepare_router() -> Router:
@@ -48,6 +48,6 @@ def prepare_router() -> Router:
     user_router.callback_query.register(cart.input_address, F.data == "input_address")
     user_router.message.register(cart.making_order, StateFilter(user.UserMainMenu.input_address))
 
-    user_router.callback_query.register(cart.check_handler, F.data.startswith('check_'))
+    user_router.callback_query.register(cart.check_handler, Payment.filter(F.action.in_(["check_payment"])))
 
     return user_router

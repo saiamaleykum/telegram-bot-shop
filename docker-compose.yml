@@ -9,6 +9,7 @@ services:
     volumes:
       - ./:/app
       - bot_logs:/app/logs
+      - excel:/app/excel
     depends_on:
       - db
     networks:
@@ -48,3 +49,4 @@ networks:
 
 volumes:
   bot_logs:
+  excel:

@@ -1,3 +1,4 @@
+from datetime import datetime
 import asyncpg
 import logging
 from aiogram import types, Bot
@@ -10,6 +11,7 @@ from keyboards.default.basic import cancel_keyboard, main_keyboard
 from db.asyncpg.cart import delete_all_items_from_cart, delete_item_from_cart, get_items_from_cart
 from db.asyncpg.order import create_order
 from handlers.user import payment
+from utils.excel import order_to_excel
 
 
 async def cart_handler(
@@ -92,23 +94,33 @@ async def making_order(
         payment_sum = 0
         for item in items_in_cart:
             payment_sum += item[0] * item[3]
-        await create_order(db_pool, user_id, items_in_cart, answer, db_logger)
-        await delete_all_items_from_cart(db_pool, user_id, db_logger)
+        
         payment_url, payment_id = payment.create(payment_sum, msg.chat.id)
         await msg.answer(
             text="Счет для оплаты сформирован", 
-            reply_markup=basic.payment_keyboard(payment_url, payment_id)
+            reply_markup=basic.payment_keyboard(payment_url, payment_id, answer)
         )
     
 
 async def check_handler(
     call: types.CallbackQuery,
-    state: FSMContext
+    db_pool: asyncpg.Pool, 
+    state: FSMContext,
+    callback_data: basic.Payment,
+    db_logger: logging.Logger
 ):
-    result = payment.check(call.data.split('_')[-1])
+    result = payment.check(callback_data.payment_id)
+    user_id = call.from_user.id
+    address = callback_data.address
+    dt = datetime.now()
+
     if result:
+        items_in_cart = await get_items_from_cart(db_pool, user_id, db_logger)
+        order_id = await create_order(db_pool, user_id, dt, items_in_cart, address, db_logger)
+        await delete_all_items_from_cart(db_pool, user_id, db_logger)
+        order_to_excel(order_id, user_id, dt, address, items_in_cart)
         await call.message.answer(
-            text="Оплата прошла успешно!", 
+            text=f"Оплата прошла успешно!", 
             reply_markup=main_keyboard
         )
         await state.set_state(states.user.UserMainMenu.menu)

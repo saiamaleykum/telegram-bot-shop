@@ -28,6 +28,12 @@ class Cart(CallbackData, prefix="cart"):
     item_id: int
 
 
+class Payment(CallbackData, prefix="pay"):
+    action: str
+    address: str
+    payment_id: str
+
+
 def get_num_pages(len: int):
     num = len // NUM_CAT_IN_MSG
     if (len % NUM_CAT_IN_MSG) != 0:
@@ -309,7 +315,7 @@ help_keyboard_cancel = InlineKeyboardMarkup(
 ) 
 
 
-def payment_keyboard(payment_url, payment_id):
+def payment_keyboard(payment_url, payment_id, address):
     builder = InlineKeyboardBuilder()
     builder.row(
         InlineKeyboardButton(
@@ -320,7 +326,11 @@ def payment_keyboard(payment_url, payment_id):
     builder.row(
         InlineKeyboardButton(
             text="Проверить оплату ✅",
-            callback_data=f"check_{payment_id}"
+            callback_data=Payment(
+                        payment_id=payment_id, 
+                        action="check_payment", 
+                        address=address
+                    ).pack()
         )
     )
     return builder.as_markup()
