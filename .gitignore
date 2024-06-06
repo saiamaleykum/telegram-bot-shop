@@ -156,4 +156,4 @@ cython_debug/
 
 bot.log
 logs
-data
+pg
