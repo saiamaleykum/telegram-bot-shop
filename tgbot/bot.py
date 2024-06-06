@@ -4,7 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
-from aiogram.enums.parse_mode import ParseMode
+from aiogram.enums import ParseMode
 
 import handlers, utils
 from data import config
@@ -70,7 +70,7 @@ async def aiogram_on_shutdown_polling(dispatcher: Dispatcher, bot: Bot) -> None:
 def main() -> None:
     bot = Bot(
         token=config.BOT_TOKEN, 
-        defaults=DefaultBotProperties(parse_mode=ParseMode.HTML,)
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML)
     )
     dp = Dispatcher(storage=MemoryStorage())
 
