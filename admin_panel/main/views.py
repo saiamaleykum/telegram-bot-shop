@@ -23,10 +23,6 @@ def broadcast_view(request):
         if form.is_valid():
             message = form.cleaned_data['message']
             users = User.objects.all()
-            # users = User.objects.filter(username='salamaIeykum')
-            
-            # for user in users:
-
             asyncio.run(send_message(users, message))
             messages.success(request, 'Broadcast sent successfully!')
             return redirect('broadcast')
