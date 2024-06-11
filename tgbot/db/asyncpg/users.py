@@ -14,15 +14,15 @@ async def add_user(
         sql = f"""
                 SELECT user_id 
                 FROM users 
-                WHERE user_id = {user_id}
+                WHERE user_id = $1
                 """
-        id = await connection.fetchval(sql)
+        id = await connection.fetchval(sql, user_id)
         if not id:
             sql = f"""
                 INSERT INTO users (user_id, username, time_registration) 
-                VALUES ({user_id}, '{username}', '{datetime.now()}')
+                VALUES ($1, $2, $3)
                 """
-            await connection.execute(sql)
+            await connection.execute(sql, int(user_id), str(username) or '', datetime.now())
     except Exception as e:
         db_logger.error(f"add_user: ({e})")
     finally:

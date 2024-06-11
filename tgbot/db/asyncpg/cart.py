@@ -15,17 +15,17 @@ async def add_item_to_cart(
             sql = f"""
                     SELECT quantity 
                     FROM cart 
-                    WHERE user_id = {user_id} AND item_id = {item_id}
+                    WHERE user_id = $1 AND item_id = $2
                     """
-            result = await connection.fetchval(sql)
+            result = await connection.fetchval(sql, int(user_id), int(item_id))
             if result:
                 return False
             else:
                 sql = f"""
                     INSERT INTO cart (user_id, item_id, quantity) 
-                    VALUES ({user_id}, '{item_id}', {quantity})
+                    VALUES ($1, $2, $3)
                     """
-                await connection.execute(sql)
+                await connection.execute(sql, int(user_id), int(item_id), int(quantity))
                 return True
     except Exception as e:
         db_logger.error(f"add_item_to_cart: ({e})")
@@ -44,10 +44,10 @@ async def get_items_from_cart(
                 SELECT c.quantity, i.title, i.description, i.price, c.item_id, i.photo_id
                 FROM cart AS c
                 LEFT JOIN items AS i ON c.item_id = i.item_id
-                WHERE user_id = {user_id}
+                WHERE user_id = $1
                 ORDER BY c.item_id ASC
                 """
-        records = await connection.fetch(sql)
+        records = await connection.fetch(sql, int(user_id))
         items = [
             [
                 record['quantity'],
@@ -75,9 +75,9 @@ async def delete_item_from_cart(
     try:
         sql = f"""
                 DELETE FROM cart
-                WHERE user_id = {user_id} AND item_id = {item_id}
+                WHERE user_id = $1 AND item_id = $2
                 """
-        await connection.execute(sql)
+        await connection.execute(sql, int(user_id), int(item_id))
     except Exception as e:
         db_logger.error(f"delete_item_from_cart: ({e})")
     finally:
@@ -93,9 +93,9 @@ async def delete_all_items_from_cart(
     try:
         sql = f"""
                 DELETE FROM cart
-                WHERE user_id = {user_id} 
+                WHERE user_id = $1
                 """
-        await connection.execute(sql)
+        await connection.execute(sql, int(user_id))
     except Exception as e:
         db_logger.error(f"delete_all_items_from_cart: ({e})")
     finally:

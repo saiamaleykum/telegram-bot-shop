@@ -33,9 +33,9 @@ async def get_subcategories(
         sql = f"""
                 SELECT category_id, title 
                 FROM public.categories
-                WHERE parent_id = {parent_id}
+                WHERE parent_id = $1
                 """
-        records = await connection.fetch(sql)
+        records = await connection.fetch(sql, int(parent_id))
         categories = [[record['category_id'], record['title']] for record in records]
         return categories
     except Exception as e:

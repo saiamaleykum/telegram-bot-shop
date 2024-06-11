@@ -16,16 +16,16 @@ async def create_order(
         async with connection.transaction():
             sql = f"""
                     INSERT INTO orders (user_id, time_create, status, address) 
-                    VALUES ({user_id}, '{dt}', 'paid', '{address}')
+                    VALUES ($1, $2, $3, $4)
                     RETURNING order_id
                     """
-            order_id = await connection.fetchval(sql)
+            order_id = await connection.fetchval(sql, int(user_id), dt, 'paid', str(address))
             for item in items_in_cart:
                 sql = f"""
                         INSERT INTO order_items (order_id, item_id, quantity) 
-                        VALUES ({order_id}, {item[4]}, {item[0]})
+                        VALUES ($1, $2, $3)
                         """
-                await connection.execute(sql)
+                await connection.execute(sql, int(order_id), int(item[4]), int(item[0]))
             return order_id 
     except Exception as e:
         db_logger.error(f"create_order: ({e})")

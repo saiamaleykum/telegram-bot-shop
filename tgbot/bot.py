@@ -9,6 +9,7 @@ from aiogram.enums import ParseMode
 import handlers, utils
 from data import config
 from db.asyncpg import create_tables
+from middlewares import CheckSubscriptionMiddleware
 
 
 async def create_db_connections(dp: Dispatcher) -> None:
@@ -37,6 +38,10 @@ def setup_handlers(dp: Dispatcher) -> None:
     dp.include_router(handlers.user.prepare_router())
 
 
+def setup_middlewares(dp: Dispatcher) -> None:
+    dp.update.outer_middleware(CheckSubscriptionMiddleware())
+
+
 def setup_logging(dp: Dispatcher) -> None:
     dp["aiogram_logger"] = utils.logging.setup_logger("aiogram")
     dp["db_logger"] = utils.logging.setup_logger("db")
@@ -50,6 +55,7 @@ async def setup_aiogram(dp: Dispatcher) -> None:
     await create_db_connections(dp)
     await create_tables(dp['db_pool'] , dp["db_logger"])
     setup_handlers(dp)
+    setup_middlewares(dp)
     logger.info("Configured aiogram")
 
 

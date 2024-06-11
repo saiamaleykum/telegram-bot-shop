@@ -12,10 +12,10 @@ async def get_items(
         sql = f"""
                 SELECT item_id, title, description, price, photo_id
                 FROM items
-                WHERE category_id = {category_id}
+                WHERE category_id = $1
                 ORDER BY category_id ASC 
                 """
-        records = await connection.fetch(sql)
+        records = await connection.fetch(sql, int(category_id))
         categories = [
             [
                 record['item_id'], 
@@ -42,9 +42,9 @@ async def get_item(
         sql = f"""
                 SELECT title, description, price, photo_id
                 FROM items
-                WHERE item_id = {item_id}
+                WHERE item_id = $1
                 """
-        records = await connection.fetch(sql)
+        records = await connection.fetch(sql, int(item_id))
         categories = [
             records[0]['title'], 
             records[0]['description'], 

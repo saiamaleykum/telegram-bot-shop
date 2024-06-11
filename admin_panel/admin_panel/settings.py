@@ -62,16 +62,16 @@ WSGI_APPLICATION = 'admin_panel.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "bottec_test",
-        'USER': "postgres",
-        'PASSWORD': "z68jSmgC",
-        'HOST': "db",
-        'PORT': "5432",
-        # 'NAME': config.POSTGRES_DB,
-        # 'USER': config.POSTGRES_USER,
-        # 'PASSWORD': config.POSTGRES_PASSWORD,
-        # 'HOST': config.POSTGRES_HOST,
-        # 'PORT': config.POSTGRES_PORT,
+        # 'NAME': "bottec_test",
+        # 'USER': "postgres",
+        # 'PASSWORD': "z68jSmgC",
+        # 'HOST': "localhost",
+        # 'PORT': "5432",
+        'NAME': config.POSTGRES_DB,
+        'USER': config.POSTGRES_USER,
+        'PASSWORD': config.POSTGRES_PASSWORD,
+        'HOST': config.POSTGRES_HOST,
+        'PORT': config.POSTGRES_PORT,
     }
 }
 
