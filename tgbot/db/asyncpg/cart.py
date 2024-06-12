@@ -12,7 +12,7 @@ async def add_item_to_cart(
     connection = await db_pool.acquire()
     try:
         async with connection.transaction():
-            sql = f"""
+            sql =   """   
                     SELECT quantity 
                     FROM cart 
                     WHERE user_id = $1 AND item_id = $2
@@ -21,7 +21,7 @@ async def add_item_to_cart(
             if result:
                 return False
             else:
-                sql = f"""
+                sql = """
                     INSERT INTO cart (user_id, item_id, quantity) 
                     VALUES ($1, $2, $3)
                     """
@@ -40,7 +40,7 @@ async def get_items_from_cart(
 ) -> list:
     connection = await db_pool.acquire()
     try:
-        sql = f"""
+        sql = """
                 SELECT c.quantity, i.title, i.description, i.price, c.item_id, i.photo_id
                 FROM cart AS c
                 LEFT JOIN items AS i ON c.item_id = i.item_id
@@ -73,7 +73,7 @@ async def delete_item_from_cart(
 ) -> None:
     connection = await db_pool.acquire()
     try:
-        sql = f"""
+        sql = """
                 DELETE FROM cart
                 WHERE user_id = $1 AND item_id = $2
                 """
@@ -91,7 +91,7 @@ async def delete_all_items_from_cart(
 ) -> None:
     connection = await db_pool.acquire()
     try:
-        sql = f"""
+        sql = """
                 DELETE FROM cart
                 WHERE user_id = $1
                 """

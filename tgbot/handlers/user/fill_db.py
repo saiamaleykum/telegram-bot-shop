@@ -10,7 +10,7 @@ async def fill(
 ) -> None:
     connection = await db_pool.acquire()
     try:
-        sql = f"""
+        sql = """
                 INSERT INTO categories (title, parent_id) VALUES 
                 ('Электроника', NULL),
                 ('Смартфоны', 1),
@@ -39,7 +39,7 @@ async def fill(
                 ('Автохимия', 21);
                 """
         await connection.execute(sql)
-        sql = f"""
+        sql = """
                 INSERT INTO items (title, description, price, category_id, photo_id) VALUES 
 
                 ('Смартфон A', 'Современный смартфон с высоким разрешением', 299.99, 2, 'AgACAgIAAxkBAALpPmZc0jtDTE7DZcYu_XaujcsCRkqKAAJ53zEbIPbpSkbxO0Cz7UYDAQADAgADbQADNQQ'),

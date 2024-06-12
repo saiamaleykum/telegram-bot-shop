@@ -9,7 +9,7 @@ async def get_items(
 ) -> list:
     connection = await db_pool.acquire()
     try:
-        sql = f"""
+        sql = """
                 SELECT item_id, title, description, price, photo_id
                 FROM items
                 WHERE category_id = $1
@@ -39,7 +39,7 @@ async def get_item(
 ) -> list:
     connection = await db_pool.acquire()
     try:
-        sql = f"""
+        sql = """
                 SELECT title, description, price, photo_id
                 FROM items
                 WHERE item_id = $1

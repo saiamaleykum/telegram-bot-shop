@@ -30,7 +30,7 @@ async def get_subcategories(
 ) -> list:
     connection = await db_pool.acquire()
     try:
-        sql = f"""
+        sql = """
                 SELECT category_id, title 
                 FROM public.categories
                 WHERE parent_id = $1

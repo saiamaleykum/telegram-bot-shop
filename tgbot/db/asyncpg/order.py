@@ -14,14 +14,14 @@ async def create_order(
     connection = await db_pool.acquire()
     try:
         async with connection.transaction():
-            sql = f"""
+            sql = """
                     INSERT INTO orders (user_id, time_create, status, address) 
                     VALUES ($1, $2, $3, $4)
                     RETURNING order_id
                     """
             order_id = await connection.fetchval(sql, int(user_id), dt, 'paid', str(address))
             for item in items_in_cart:
-                sql = f"""
+                sql = """
                         INSERT INTO order_items (order_id, item_id, quantity) 
                         VALUES ($1, $2, $3)
                         """

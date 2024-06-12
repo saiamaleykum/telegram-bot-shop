@@ -11,14 +11,14 @@ async def add_user(
 ) -> None:
     connection = await db_pool.acquire()
     try:
-        sql = f"""
+        sql = """
                 SELECT user_id 
                 FROM users 
                 WHERE user_id = $1
                 """
         id = await connection.fetchval(sql, user_id)
         if not id:
-            sql = f"""
+            sql = """
                 INSERT INTO users (user_id, username, time_registration) 
                 VALUES ($1, $2, $3)
                 """
