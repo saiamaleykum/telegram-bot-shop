@@ -1,10 +1,15 @@
 import asyncio
 import asyncpg
 import logging
+import sys
+import os
+import django
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+import django.db
+import django.db.models
 
 import handlers, utils
 from data import config
@@ -48,6 +53,16 @@ def setup_logging(dp: Dispatcher) -> None:
     dp["business_logger"] = utils.logging.setup_logger("business")
 
 
+def setup_models(dp: Dispatcher) -> None:
+    sys.path.append(os.path.join(os.path.dirname(__file__), '../admin_panel'))
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'admin_panel.settings')
+    django.setup()
+    
+    from main.models import User
+
+    dp["user_model"] = User
+
+
 async def setup_aiogram(dp: Dispatcher) -> None:
     setup_logging(dp)
     logger = dp["aiogram_logger"]
@@ -56,6 +71,7 @@ async def setup_aiogram(dp: Dispatcher) -> None:
     await create_tables(dp['db_pool'] , dp["db_logger"])
     setup_handlers(dp)
     setup_middlewares(dp)
+    setup_models(dp)
     logger.info("Configured aiogram")
 
 
