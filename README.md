@@ -21,10 +21,10 @@ Telegram Bot Shop with admin panel on Django
 | Bulk messaging | Рассылка |
 | Logging | Логирование |
 
-| Commands | EN | RU |
+| Command | EN | RU |
 | - | - | - |
 | `/fill` | fill the database with test data | заполнить базу данных тестовыми данными |
 
-[Diagram/Диаграмма](https://ibb.co/jHwyQkw)
+[Diagram / Диаграмма](https://ibb.co/jHwyQkw)
 
 [Admin panel / Админ панель](http://localhost:8000/admin/)
