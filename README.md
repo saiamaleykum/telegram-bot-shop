@@ -28,3 +28,9 @@ Telegram Bot Shop with admin panel on Django
 [Diagram / Диаграмма](https://ibb.co/jHwyQkw)
 
 [Admin panel / Админ панель](http://localhost:8000/admin/)
+
+## Stack
+- Django
+- Aiogram
+- PostgreSQL (asyncpg)
+- Docker
